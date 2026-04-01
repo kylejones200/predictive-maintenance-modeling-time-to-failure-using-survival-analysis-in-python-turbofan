@@ -35,7 +35,7 @@ def fit_cox_proportional_hazards(df: pd.DataFrame, duration_col: str, event_col:
     return cph
 
 def plot_survival_curve(kmf: KaplanMeierFitter, title: str, output_path: Path):
- """Plot survival curve """
+    """Plot survival curve """
     fig, ax = plt.subplots(figsize=(10, 6))
     
     ax.set_xlabel("Time")

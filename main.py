@@ -11,7 +11,7 @@ import logging
 import numpy as np
 import pandas as pd
 from pathlib import Path
-from src.core import ((level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+from src.core import (
     load_survival_data,
     fit_kaplan_meier,
     fit_weibull_survival,
