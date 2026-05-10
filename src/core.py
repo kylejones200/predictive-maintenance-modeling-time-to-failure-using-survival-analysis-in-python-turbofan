@@ -34,13 +34,14 @@ def fit_cox_proportional_hazards(df: pd.DataFrame, duration_col: str, event_col:
     cph.fit(df[[duration_col, event_col] + covariates], duration_col=duration_col, event_col=event_col)
     return cph
 
-def plot_survival_curve(kmf: KaplanMeierFitter, title: str, output_path: Path):
+def plot_survival_curve(kmf: KaplanMeierFitter, title: str, output_path: Path, plot: bool = False):
     """Plot survival curve """
-    fig, ax = plt.subplots(figsize=(10, 6))
+    if plot:
+        fig, ax = plt.subplots(figsize=(10, 6))
     
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Survival Probability")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Survival Probability")
     
-    plt.savefig(output_path, dpi=100, bbox_inches="tight")
-    plt.close()
+        plt.savefig(output_path, dpi=100, bbox_inches="tight")
+        plt.close()
 
