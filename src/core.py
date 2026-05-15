@@ -1,9 +1,7 @@
 """Core functions for survival analysis time-to-failure modeling."""
 
 import pandas as pd
-import numpy as np
 from pathlib import Path
-from typing import Tuple
 from lifelines import KaplanMeierFitter, WeibullFitter, CoxPHFitter
 import matplotlib.pyplot as plt
 import logging
