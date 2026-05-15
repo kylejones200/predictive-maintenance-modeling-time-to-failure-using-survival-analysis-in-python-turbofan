@@ -54,21 +54,21 @@ def main():
     
     if config['model']['kaplan_meier']:
                 kmf = fit_kaplan_meier(df, config['data']['duration_column'], config['data']['event_column'])
-        logging.info(f"Median survival time: {kmf.median_survival_time_:.2f}")
-        plot_survival_curve(kmf, "Kaplan-Meier Survival Curve", output_dir / 'kaplan_meier.png')
+logging.info(f"Median survival time: {kmf.median_survival_time_:.2f}")
+plot_survival_curve(kmf, "Kaplan-Meier Survival Curve", output_dir / 'kaplan_meier.png')
     
-    if config['model']['weibull']:
+if config['model']['weibull']:
                 wf = fit_weibull_survival(df, config['data']['duration_column'], config['data']['event_column'])
-        logging.info(wf.summary)
+logging.info(wf.summary)
     
-    if config['model']['cox_ph'] and config['model']['covariates']:
+if config['model']['cox_ph'] and config['model']['covariates']:
                 cph = fit_cox_proportional_hazards(
             df, config['data']['duration_column'], config['data']['event_column'],
             config['model']['covariates']
         )
-        logging.info(cph.summary)
+logging.info(cph.summary)
     
-    logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
+logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
 if __name__ == "__main__":
     main()
