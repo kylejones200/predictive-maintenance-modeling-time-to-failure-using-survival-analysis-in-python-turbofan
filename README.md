@@ -52,3 +52,11 @@ Edit `config.yaml` to customize:
 - By default, generates synthetic survival data.
 - Requires duration and event columns in data.
 - Censoring is important for accurate survival estimates.
+
+## Disclaimer
+
+Educational/demo code only. Not financial, safety, or engineering advice. Use at your own risk. Verify results independently before any production or operational use.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
