@@ -1,9 +1,9 @@
 """Survival analysis demo on synthetic war-duration data."""
 
-from lifelines import CoxPHFitter, KaplanMeierFitter
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from lifelines import CoxPHFitter, KaplanMeierFitter
 
 
 def main() -> None:
@@ -19,7 +19,6 @@ def main() -> None:
             "event_observed": event,
         }
     )
-
     kmf = KaplanMeierFitter()
     kmf.fit(df["war_duration_days"], event_observed=df["event_observed"])
     kmf.plot_survival_function(ci_show=False)
@@ -29,7 +28,6 @@ def main() -> None:
     plt.tight_layout()
     plt.savefig("km_survival.png", dpi=150)
     plt.show()
-
     cph = CoxPHFitter()
     cph.fit(df, duration_col="war_duration_days", event_col="event_observed")
     cph.print_summary()

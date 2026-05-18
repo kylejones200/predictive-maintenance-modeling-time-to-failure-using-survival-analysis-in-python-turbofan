@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""
-Survival Analysis Time to Failure
-
-Main entry point for running survival analysis.
-"""
+"""Survival Analysis Time to Failure."""
 
 import argparse
 import logging
@@ -17,6 +13,7 @@ from src.core import (
     fit_kaplan_meier,
     fit_weibull_survival,
     load_survival_data,
+    plot_survival_curve,
 )
 
 logging.basicConfig(
@@ -24,26 +21,19 @@ logging.basicConfig(
 )
 
 
-def load_config(config_path: Path = None) -> dict:
-    """Load configuration from YAML file."""
+def load_config(config_path: Path | None = None) -> dict:
     if config_path is None:
         config_path = Path(__file__).parent / "config.yaml"
-
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Survival Analysis Time to Failure")
-    parser.add_argument("--config", type=Path, default=None, help="Path to config file")
-    parser.add_argument(
-        "--data-path", type=Path, default=None, help="Path to data file"
-    )
-    parser.add_argument(
-        "--output-dir", type=Path, default=None, help="Output directory for plots"
-    )
+    parser.add_argument("--config", type=Path, default=None)
+    parser.add_argument("--data-path", type=Path, default=None)
+    parser.add_argument("--output-dir", type=Path, default=None)
     args = parser.parse_args()
-
     config = load_config(args.config)
     output_dir = (
         Path(args.output_dir)
@@ -67,31 +57,31 @@ def main():
     else:
         raise ValueError("No data source specified")
 
+    duration_col = config["data"]["duration_column"]
+    event_col = config["data"]["event_column"]
+
     if config["model"]["kaplan_meier"]:
-        kmf = fit_kaplan_meier(
-            df, config["data"]["duration_column"], config["data"]["event_column"]
+        kmf = fit_kaplan_meier(df, duration_col, event_col)
+        logging.info(f"Median survival time: {kmf.median_survival_time_:.2f}")
+        plot_survival_curve(
+            kmf,
+            "Kaplan-Meier Survival Curve",
+            output_dir / "kaplan_meier.png",
+            plot=True,
         )
 
+    if config["model"]["weibull"]:
+        wf = fit_weibull_survival(df, duration_col, event_col)
+        logging.info(wf.summary)
 
-logging.info(f"Median survival time: {kmf.median_survival_time_:.2f}")
-plot_survival_curve(kmf, "Kaplan-Meier Survival Curve", output_dir / "kaplan_meier.png")
+    if config["model"]["cox_ph"] and config["model"]["covariates"]:
+        cph = fit_cox_proportional_hazards(
+            df, duration_col, event_col, config["model"]["covariates"]
+        )
+        logging.info(cph.summary)
 
-if config["model"]["weibull"]:
-    wf = fit_weibull_survival(
-        df, config["data"]["duration_column"], config["data"]["event_column"]
-    )
-logging.info(wf.summary)
+    logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
-if config["model"]["cox_ph"] and config["model"]["covariates"]:
-    cph = fit_cox_proportional_hazards(
-        df,
-        config["data"]["duration_column"],
-        config["data"]["event_column"],
-        config["model"]["covariates"],
-    )
-logging.info(cph.summary)
-
-logging.info(f"\nAnalysis complete. Figures saved to {output_dir}")
 
 if __name__ == "__main__":
     main()
